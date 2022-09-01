@@ -5,6 +5,8 @@ import "./App.css";
 function App() {
   const [tarea, setTarea] = useState("");
   const [tareas, setTareas] = useState([]);
+  const [edit, setEdit] = useState(false);
+  const [id, setId] = useState('')
 
   const agregarTarea = (e) => {
     e.preventDefault();
@@ -18,10 +20,31 @@ function App() {
   };
 
   const eliminarTarea = (id) => {
-    const arrayFiltrado = tareas.filter(item => item.id !== id)
-    setTareas(arrayFiltrado)
+    const arrayFiltrado = tareas.filter((item) => item.id !== id);
+    setTareas(arrayFiltrado);
+    
   };
 
+  const editItem = (item) => {
+    console.log(item);
+    setEdit(true);
+    setTarea(item.tarea);
+    setId(item.id)
+    
+  };
+  const editTarea = (e)=>{
+    e.preventDefault();
+    if (!tarea.trim()) {
+      console.log("Elemento vacio");
+      return;
+  }
+  const filtradoTarea = tareas.map(item => item.id == id ? {id, tarea} : item)
+  setTareas(filtradoTarea)
+  console.log('Tareas: ', tareas);
+  setEdit(false);
+  setTarea('')
+  setId('')
+  }
   return (
     <div className="container">
       <>
@@ -36,11 +59,14 @@ function App() {
                     <span className="lead">{item.tarea}</span>
                     <button
                       className="btn btn-danger btn-sm float-end mx-2"
-                      onClick={()=>eliminarTarea(item.id)}
+                      onClick={() => eliminarTarea(item.id)}
                     >
                       Eliminar
                     </button>
-                    <button className="btn btn-warning btn-sm float-end">
+                    <button
+                      className="btn btn-warning btn-sm float-end"
+                      onClick={() => editItem(item)}
+                    >
                       Editar
                     </button>
                   </li>
@@ -49,8 +75,8 @@ function App() {
             </ul>
           </div>
           <div className="col-4">
-            Formulario
-            <form className="d-grid" onSubmitCapture={agregarTarea}>
+            {edit ? "Editar Tarea" : "Agregar Tarea"}
+            <form className="d-grid" onSubmitCapture={ edit ? editTarea : agregarTarea}>
               <input
                 className="form-control mb-2"
                 type="text"
@@ -58,7 +84,15 @@ function App() {
                 onChange={(e) => setTarea(e.target.value)}
                 value={tarea}
               />
-              <input className="btn btn-dark" type="submit" value="agregar" />
+              {edit ? (
+                <input
+                  className="btn btn-warning"
+                  type="submit"
+                  value="editar"
+                />
+              ) : (
+                <input className="btn btn-dark" type="submit" value="agregar" />
+              )}
             </form>
           </div>
         </div>
