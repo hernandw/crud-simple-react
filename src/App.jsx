@@ -2,21 +2,24 @@ import { useState } from "react";
 import { nanoid } from "nanoid";
 import "./App.css";
 
-
 function App() {
   const [tarea, setTarea] = useState("");
   const [tareas, setTareas] = useState([]);
- 
 
   const agregarTarea = (e) => {
     e.preventDefault();
-    if(!tarea.trim()){
-      console.log('Elemento vacio')
-    return
+    if (!tarea.trim()) {
+      console.log("Elemento vacio");
+      return;
     }
     console.log(tarea);
-    setTareas([...tareas, {id: nanoid(10), tarea} ])
-    setTarea('')
+    setTareas([...tareas, { id: nanoid(10), tarea }]);
+    setTarea("");
+  };
+
+  const eliminarTarea = (id) => {
+    const arrayFiltrado = tareas.filter(item => item.id !== id)
+    setTareas(arrayFiltrado)
   };
 
   return (
@@ -31,7 +34,10 @@ function App() {
                 return (
                   <li className="list-group-item" id={item.id} key={item.id}>
                     <span className="lead">{item.tarea}</span>
-                    <button className="btn btn-danger btn-sm float-end mx-2">
+                    <button
+                      className="btn btn-danger btn-sm float-end mx-2"
+                      onClick={()=>eliminarTarea(item.id)}
+                    >
                       Eliminar
                     </button>
                     <button className="btn btn-warning btn-sm float-end">
